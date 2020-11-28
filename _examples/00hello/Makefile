@@ -1,7 +1,7 @@
 export ADDR := :44444
 
 00:
-	go run main.go
+	go run cmd/hello-api/main.go
 
 # check
 x00:
