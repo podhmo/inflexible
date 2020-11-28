@@ -17,20 +17,33 @@ func main() {
 		addr = v
 	}
 
-	if err := Run(addr); err != nil {
+	run := func() error {
+		mux := SetupHTTPHandler()
+		return Run(mux, addr)
+	}
+	if err := run(); err != nil {
 		log.Fatalf("!! %+v", err)
 	}
 }
 
-func Run(addr string) error {
-	mux := http.DefaultServeMux
+func Run(mux http.Handler, addr string) error {
+	// todo: graceful stop
+	log.Printf("listen %s...", addr)
+	return http.ListenAndServe(addr, mux)
+}
+
+// TODO: generate automatically
+
+func SetupHTTPHandler() http.Handler {
+	mux := http.DefaultServeMux // todo: fix
+
+	// TODO: generate the endpoint returns openapi doc
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		tenuki.Render(w, r).JSON(200, map[string]interface{}{
 			"methods": []string{"Hello"},
 		})
 	})
-	mux.HandleFunc("/Hello", weblib.LiftHandler(todogenerated.Hello))
 
-	log.Printf("listen %s...", addr)
-	return http.ListenAndServe(addr, mux)
+	mux.HandleFunc("/Hello", weblib.LiftHandler(todogenerated.Hello))
+	return mux
 }

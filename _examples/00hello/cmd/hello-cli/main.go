@@ -10,12 +10,12 @@ import (
 )
 
 func main() {
-	cmd := clilib.NewRouterCommand(
-		os.Args[0], []*clilib.Command{
-			NewHello(),
-		},
-	)
+	name := os.Args[0]
+	subCommands := []*clilib.Command{
+		NewHello(),
+	}
 
+	cmd := clilib.NewRouterCommand(name, subCommands)
 	run := func() error {
 		return cmd.Do([]*clilib.Command{cmd}, os.Args[1:])
 	}
