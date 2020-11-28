@@ -2,7 +2,6 @@ package todogenerated
 
 import (
 	"context"
-	"strconv"
 
 	"m/design"
 
@@ -29,16 +28,15 @@ func AddTodo(ctx context.Context, ev inflexible.Event) (interface{}, error) {
 
 func ListTodo(ctx context.Context, ev inflexible.Event) (interface{}, error) {
 	var input struct {
-		all bool `json:"all"`
+		All bool `json:"all"`
 	}
+	if err := tenuki.DecodeJSON(ev.Body, &input); err != nil {
+		return nil, inflexible.NewAppError(err, 400)
+	}
+
 	registry, err := design.GetRegistry(ctx)
 	if err != nil {
 		return nil, inflexible.NewAppError(err, 500)
 	}
-
-	// ?
-	if ok, err := strconv.ParseBool(ev.Headers.Get("all")); err == nil {
-		input.all = ok
-	}
-	return design.ListTodo(ctx, registry.Store, &input.all)
+	return design.ListTodo(ctx, registry.Store, &input.All)
 }

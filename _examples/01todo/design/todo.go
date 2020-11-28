@@ -21,7 +21,7 @@ func ListTodo(ctx context.Context, store store.Store, all *bool) ([]Todo, error)
 	if all == nil || !*all {
 		r := make([]Todo, 0, len(list))
 		for _, x := range list {
-			if x.Done {
+			if !x.Done {
 				r = append(r, x)
 			}
 		}

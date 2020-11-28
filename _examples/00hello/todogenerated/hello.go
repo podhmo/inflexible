@@ -21,9 +21,8 @@ func Hello(ctx context.Context, ev inflexible.Event) (interface{}, error) {
 		return nil, inflexible.NewAppError(err, 400)
 	}
 	// ?
-	short := false
 	if ok, err := strconv.ParseBool(ev.Headers.Get("short")); err == nil {
-		short = ok
+		input.Short = ok
 	}
-	return design.Hello(ctx, input.Name, &short)
+	return design.Hello(ctx, input.Name, &input.Short)
 }
