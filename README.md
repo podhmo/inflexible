@@ -1,2 +1,5 @@
+🏗 WIP
+
 # inflexible
-not flexible, but convinient PRC/CLI toolkit
+
+not flexible, but convinient RPC/CLI toolkit
