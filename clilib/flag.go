@@ -7,6 +7,24 @@ import (
 )
 
 // implement flag.Value
+var emptyJSON = json.RawMessage(`{}`)
+
+func isEmptyJSON(msg json.RawMessage) bool {
+	if len(msg) == 0 {
+		return true
+	}
+
+	n := len(emptyJSON)
+	if n != len(msg) {
+		return false
+	}
+	for i := 0; i < n; i++ {
+		if msg[i] != emptyJSON[i] {
+			return false
+		}
+	}
+	return true
+}
 
 type LiteralOrFileContentValue json.RawMessage
 
@@ -15,7 +33,7 @@ func (v *LiteralOrFileContentValue) String() string {
 }
 func (v *LiteralOrFileContentValue) Set(filenameOrContent string) error {
 	if filenameOrContent == "" {
-		*v = LiteralOrFileContentValue(`{}`)
+		*v = LiteralOrFileContentValue(emptyJSON)
 		return nil
 	}
 
