@@ -1,0 +1,33 @@
+package clilib
+
+import (
+	"encoding/json"
+	"io/ioutil"
+	"strings"
+)
+
+// implement flag.Value
+
+type LiteralOrFileContentValue json.RawMessage
+
+func (v *LiteralOrFileContentValue) String() string {
+	return string(*v) // ???
+}
+func (v *LiteralOrFileContentValue) Set(filenameOrContent string) error {
+	if filenameOrContent == "" {
+		*v = LiteralOrFileContentValue(`{}`)
+		return nil
+	}
+
+	if !strings.HasPrefix(filenameOrContent, "@") {
+		*v = LiteralOrFileContentValue(filenameOrContent)
+		return nil
+	}
+
+	b, err := ioutil.ReadFile(strings.TrimPrefix(filenameOrContent, "@"))
+	if err != nil {
+		return err
+	}
+	*v = LiteralOrFileContentValue(b)
+	return nil
+}
