@@ -6,6 +6,7 @@ import (
 
 	"m/design"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/podhmo/inflexible"
 	"github.com/podhmo/tenuki"
 )
@@ -24,5 +25,17 @@ func Hello(ctx context.Context, ev inflexible.Event) (interface{}, error) {
 	if ok, err := strconv.ParseBool(ev.Headers.Get("short")); err == nil {
 		input.Short = ok
 	}
+
+	// todo: customize validation
+	if err := validate.Struct(&input); err != nil {
+		return nil, inflexible.NewAppError(err, 400)
+	}
 	return design.Hello(ctx, input.Name, &input.Short)
+}
+
+// use a single instance of Validate, it caches struct info
+var validate *validator.Validate
+
+func init() {
+	validate = validator.New()
 }
