@@ -63,6 +63,9 @@ func LiftHandler(h inflexible.HandlerFunc, callbacks ...func() error) DoFunc {
 		ctx := context.Background()
 		result, err := h(ctx, ev)
 		if err != nil {
+			if x, ok := err.(inflexible.HasCode); ok && x.Code() == 400 {
+				cmd.Usage()
+			}
 			return err
 		}
 

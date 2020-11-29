@@ -16,3 +16,7 @@ func (e *appError) Error() string {
 func (e *appError) Code() int {
 	return e.code
 }
+
+type HasCode interface {
+	Code() int
+}

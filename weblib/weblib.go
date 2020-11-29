@@ -32,8 +32,8 @@ func LiftHandler(h inflexible.HandlerFunc) http.HandlerFunc {
 		result, err := h(ctx, ev)
 		if err != nil {
 			code := 500
-			if x, ok := err.(interface{ StatusCode() int }); ok {
-				code = x.StatusCode()
+			if x, ok := err.(inflexible.HasCode); ok {
+				code = x.Code()
 			}
 			tenuki.Render(w, r).JSON(code, map[string]string{"message": err.Error()})
 			return
