@@ -9,24 +9,29 @@ openapi.json: cmd/todo-gendoc/main.go $(wildcard design/*.go) $(wildcard todogen
 
 # check
 x00:
-#	http --json POST $(ADDR)/
-	http -b --json POST $(ADDR)/ListTodo all==true
-	echo '{"todo": {"title": "foo"}}' | http -b --json POST $(ADDR)/AddTodo
-	echo '{"todo": {"title": "bar", "done": true}}' | http -b --json POST $(ADDR)/AddTodo
-	http -b --json POST $(ADDR)/ListTodo all==true
-	http -b --json POST $(ADDR)/ListTodo
-
+	http --json POST $(ADDR)/
 x01:
-	go run cmd/todo-cli/main.go ListTodo
+	http -b --json POST $(ADDR)/ListTodo
 x02:
-	go run cmd/todo-cli/main.go ListTodo --all
+	http -b --json POST $(ADDR)/ListTodo all==true
 x03:
-	go run cmd/todo-cli/main.go AddTodo --todo @todo-sample.json
+	echo '{"todo": {"title": "foo"}}' | http -b --json POST $(ADDR)/AddTodo
 x04:
-	go run cmd/todo-cli/main.go AddTodo --todo @<(echo '{"title": "foo"}')
+	echo '{"todo": {"title": "bar", "done": true}}' | http -b --json POST $(ADDR)/AddTodo
 x05:
+	http -b --json POST $(ADDR)/ListTodo ALL:true
+
+x10:
+	go run cmd/todo-cli/main.go ListTodo
+x11:
+	go run cmd/todo-cli/main.go ListTodo --all
+x12:
+	go run cmd/todo-cli/main.go AddTodo --todo @todo-sample.json
+x13:
+	go run cmd/todo-cli/main.go AddTodo --todo @<(echo '{"title": "foo"}')
+x14:
 	go run cmd/todo-cli/main.go AddTodo --todo '{"title": "bar", "done": true}'
-x06:
+x15:
 	go run cmd/todo-cli/main.go AddTodo --POSTDATA '{"todo": {"title": "foo"}}'
 
 

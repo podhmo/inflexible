@@ -2,6 +2,7 @@ package todogenerated
 
 import (
 	"context"
+	"strconv"
 
 	"m/design"
 
@@ -36,8 +37,8 @@ func ListTodo(ctx context.Context, ev inflexible.Event) (interface{}, error) {
 	var input struct {
 		All bool `json:"all"`
 	}
-	if err := tenuki.DecodeJSON(ev.Body, &input); err != nil {
-		return nil, inflexible.NewAppError(err, 400)
+	if ok, err := strconv.ParseBool(ev.QueryOrHeader.Get("all")); err == nil {
+		input.All = ok
 	}
 
 	// todo: customize validation
