@@ -12,6 +12,7 @@ type Todo struct {
 	Done  bool   `json:"done"`
 }
 
+// ListTodo Returns the current todo list
 func ListTodo(ctx context.Context, store store.Store, all *bool) ([]Todo, error) {
 	var list []Todo
 	if err := store.Load(ctx, "todo.json", &list); err != nil {
@@ -30,6 +31,7 @@ func ListTodo(ctx context.Context, store store.Store, all *bool) ([]Todo, error)
 	return list, nil
 }
 
+// AddTodo Adds a new todo to your todo list
 func AddTodo(ctx context.Context, store store.Store, todo Todo) (*Todo, error) {
 	var list []Todo
 	if err := store.Load(ctx, "todo.json", &list); err != nil {

@@ -23,6 +23,7 @@
   "paths": {
     "/AddTodo": {
       "post": {
+        "description": "Adds a new todo to your todo list",
         "operationId": "m/design.AddTodo",
         "requestBody": {
           "content": {
@@ -60,6 +61,7 @@
     },
     "/ListTodo": {
       "post": {
+        "description": "Returns the current todo list",
         "operationId": "m/design.ListTodo",
         "parameters": [
           {
