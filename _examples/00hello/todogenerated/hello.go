@@ -21,8 +21,7 @@ func Hello(ctx context.Context, ev inflexible.Event) (interface{}, error) {
 	if err := tenuki.DecodeJSON(ev.Body, &input); err != nil {
 		return nil, inflexible.NewAppError(err, 400)
 	}
-	// ?
-	if ok, err := strconv.ParseBool(ev.Headers.Get("short")); err == nil {
+	if ok, err := strconv.ParseBool(ev.QueryOrHeader.Get("short")); err == nil {
 		input.Short = ok
 	}
 

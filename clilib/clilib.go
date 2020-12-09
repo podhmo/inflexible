@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/url"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/podhmo/inflexible"
 )
@@ -53,11 +53,12 @@ func LiftHandler(h inflexible.HandlerFunc, callbacks ...func() error) DoFunc {
 			fmt.Fprintln(os.Stderr, "----------------------------------------")
 		}
 
-		var dummy url.Values
 		ev := inflexible.Event{
-			Name:    cmd.Name(),
-			Body:    ioutil.NopCloser(bytes.NewBuffer(b)),
-			Headers: dummy,
+			Name: cmd.Name(),
+			Body: ioutil.NopCloser(bytes.NewBuffer(b)),
+			QueryOrHeader: &QueryOrHeader{
+				map[string]string{}, // TODO: implement
+			},
 		}
 
 		ctx := context.Background()
@@ -76,4 +77,16 @@ func LiftHandler(h inflexible.HandlerFunc, callbacks ...func() error) DoFunc {
 			return enc.Encode(result)
 		}
 	}
+}
+
+type QueryOrHeader struct {
+	Query map[string]string
+}
+
+func (v *QueryOrHeader) Get(key string) string {
+	val := v.Query[key]
+	if val != "" {
+		return val
+	}
+	return os.Getenv(strings.ToUpper(key))
 }

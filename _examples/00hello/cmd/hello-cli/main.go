@@ -29,9 +29,11 @@ func main() {
 func NewHello() *clilib.Command {
 	fs := flag.NewFlagSet("Hello", flag.ExitOnError)
 	var options struct {
-		Name string `json:"name"`
+		Name  string `json:"name"`
+		Short bool   `json:"short"`
 	}
 	fs.StringVar(&options.Name, "name", "", "")
+	fs.BoolVar(&options.Short, "short", false, "")
 	return &clilib.Command{
 		FlagSet: fs,
 		Options: &options,
