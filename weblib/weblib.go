@@ -4,10 +4,24 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 
 	"github.com/podhmo/inflexible"
 	"github.com/podhmo/tenuki"
 )
+
+type QueryOrHeader struct {
+	Query  url.Values
+	Header http.Header
+}
+
+func (v *QueryOrHeader) Get(key string) string {
+	val := v.Query.Get(key)
+	if val != "" {
+		return val
+	}
+	return v.Header.Get(key)
+}
 
 // TODO: rename
 func LiftHandler(h inflexible.HandlerFunc) http.HandlerFunc {
@@ -21,11 +35,13 @@ func LiftHandler(h inflexible.HandlerFunc) http.HandlerFunc {
 			}
 		}()
 
-		// TODO:headers and queries
 		ev := inflexible.Event{
-			Name:    name,
-			Body:    r.Body,
-			Headers: r.URL.Query(), // + headers
+			Name: name,
+			Body: r.Body,
+			QueryOrHeader: &QueryOrHeader{
+				Query:  r.URL.Query(),
+				Header: r.Header,
+			},
 		}
 
 		ctx := inflexible.WithEvent(r.Context(), ev)

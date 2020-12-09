@@ -13,7 +13,7 @@ type getter interface {
 
 type Event struct {
 	Name    string
-	Headers getter // TODO: refine
+	QueryOrHeader getter // TODO: refine
 	Body    io.ReadCloser
 }
 
