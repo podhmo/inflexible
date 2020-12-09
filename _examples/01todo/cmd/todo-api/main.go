@@ -36,7 +36,6 @@ func Run(mux http.Handler, addr string) error {
 
 func SetupHTTPHandler() http.Handler {
 	mux := http.DefaultServeMux // todo: fix
-
 	// TODO: generate the endpoint returns openapi doc
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		tenuki.Render(w, r).JSON(200, map[string]interface{}{

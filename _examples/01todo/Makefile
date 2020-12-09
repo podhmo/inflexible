@@ -4,6 +4,9 @@ export ADDR := :44444
 00:
 	go run cmd/todo-api/main.go
 
+openapi.json:
+	go run cmd/todo-gendoc/main.go > $@ || rm $@
+
 # check
 x00:
 #	http --json POST $(ADDR)/
