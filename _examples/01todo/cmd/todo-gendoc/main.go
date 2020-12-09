@@ -2,6 +2,8 @@ package main
 
 import (
 	"m/design"
+	"reflect"
+	"strings"
 
 	reflectopenapi "github.com/podhmo/reflect-openapi"
 )
@@ -15,6 +17,9 @@ func main() {
 			reflectopenapi.MergeParamsInputSelector
 			reflectopenapi.FirstParamOutputSelector
 		}{},
+		IsRequiredCheckFunction: func(tag reflect.StructTag) bool {
+			return strings.Contains(tag.Get("validate"), "required")
+		},
 	}
 	c.EmitDoc(func(m *reflectopenapi.Manager) {
 		{

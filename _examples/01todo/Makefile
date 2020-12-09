@@ -4,7 +4,7 @@ export ADDR := :44444
 00:
 	go run cmd/todo-api/main.go
 
-openapi.json: $(wildcard design/*.go) $(wildcard todogenerated/*.go)
+openapi.json: cmd/todo-gendoc/main.go $(wildcard design/*.go) $(wildcard todogenerated/*.go)
 	go run cmd/todo-gendoc/main.go > $@ || rm $@
 
 # check
