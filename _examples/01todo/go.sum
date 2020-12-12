@@ -18,8 +18,8 @@ github.com/nsf/jsondiff v0.0.0-20200515183724-f29ed568f4ce h1:RPclfga2SEJmgMmz2k
 github.com/nsf/jsondiff v0.0.0-20200515183724-f29ed568f4ce/go.mod h1:uFMI8w+ref4v2r9jz+c9i1IfIttS/OkmLfrk1jne5hs=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/podhmo/reflect-openapi v0.0.6 h1:wtHJgrvhLO77z1pMSjnG+CYtJOwl/rziVHH33XDGkG4=
-github.com/podhmo/reflect-openapi v0.0.6/go.mod h1:oTr6vMRd2eZVbdPxkr85wu90k6nBegq10WRy2IQzG+Y=
+github.com/podhmo/reflect-openapi v0.0.7 h1:FH2jOZjEijUgaMXfLKsm8hBZPZRWuMR2VwSCeHbC36g=
+github.com/podhmo/reflect-openapi v0.0.7/go.mod h1:lKc4iecPvrRsaJ9FZscnDuZYmONMVAibGkpnL14Rh5I=
 github.com/podhmo/tenuki v0.0.3 h1:/oYMfO1WhXE6sDvKqYs1deenwzVJOmJlAsoACfKqu2g=
 github.com/podhmo/tenuki v0.0.3/go.mod h1:gnvC6oMXHaf8sZO/nE6Eqa9sdNtHKTLu7UL6hDHD7WQ=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
