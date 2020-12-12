@@ -6,7 +6,12 @@ import (
 )
 
 type HandlerFunc func(context.Context, Event) (interface{}, error)
-
+func (f HandlerFunc) Handle(ctx context.Context, ev Event) (interface{}, error){
+	return f(ctx, ev)
+}
+type Handler interface{
+	Handle(context.Context, Event) (interface{}, error)
+}
 type getter interface {
 	Get(string) string
 }

@@ -2,9 +2,8 @@ package todogenerated
 
 import (
 	"context"
-	"strconv"
-
 	"m/design"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/podhmo/inflexible"
@@ -12,8 +11,9 @@ import (
 )
 
 // -- handler TODO: generate automatically
+type helloFunc func(ctx context.Context, name string, short *bool) (string, error)
 
-func Hello(ctx context.Context, ev inflexible.Event) (interface{}, error) {
+func (f helloFunc) Handle(ctx context.Context, ev inflexible.Event) (interface{}, error) {
 	var input struct {
 		Name  string `json:"name" validate:"required"`
 		Short bool   `json:"short"`
@@ -29,8 +29,14 @@ func Hello(ctx context.Context, ev inflexible.Event) (interface{}, error) {
 	if err := validate.Struct(&input); err != nil {
 		return nil, inflexible.NewAppError(err, 400)
 	}
-	return design.Hello(ctx, input.Name, &input.Short)
+	return f(ctx, input.Name, &input.Short)
 }
+
+// bind
+
+var (
+	Hello = helloFunc(design.Hello)
+)
 
 // use a single instance of Validate, it caches struct info
 var validate *validator.Validate

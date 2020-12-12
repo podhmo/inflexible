@@ -24,7 +24,7 @@ func (v *QueryOrHeader) Get(key string) string {
 }
 
 // TODO: rename
-func LiftHandler(h inflexible.HandlerFunc) http.HandlerFunc {
+func LiftHandler(h inflexible.Handler) http.HandlerFunc {
 	name := fmt.Sprintf("%v", h) // todo: fix
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
@@ -45,7 +45,7 @@ func LiftHandler(h inflexible.HandlerFunc) http.HandlerFunc {
 		}
 
 		ctx := inflexible.WithEvent(r.Context(), ev)
-		result, err := h(ctx, ev)
+		result, err := h.Handle(ctx, ev)
 		if err != nil {
 			code := 500
 			if x, ok := err.(inflexible.HasCode); ok {

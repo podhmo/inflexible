@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"m/design"
+	"m/store"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/podhmo/inflexible"
@@ -12,8 +13,9 @@ import (
 )
 
 // -- handler TODO: generate automatically
+type addTodoFunc func(ctx context.Context, store store.Store, todo design.Todo) (*design.Todo, error)
 
-func AddTodo(ctx context.Context, ev inflexible.Event) (interface{}, error) {
+func (f addTodoFunc) Handle(ctx context.Context, ev inflexible.Event) (interface{}, error) {
 	var input struct {
 		Todo design.Todo `json:"todo" validate:"required"`
 	}
@@ -30,10 +32,12 @@ func AddTodo(ctx context.Context, ev inflexible.Event) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return design.AddTodo(ctx, registry.Store, input.Todo)
+	return f(ctx, registry.Store, input.Todo)
 }
 
-func ListTodo(ctx context.Context, ev inflexible.Event) (interface{}, error) {
+type listTodoFunc func(ctx context.Context, store store.Store, all *bool) ([]design.Todo, error)
+
+func (f listTodoFunc) Handle(ctx context.Context, ev inflexible.Event) (interface{}, error) {
 	var input struct {
 		All bool `json:"all"`
 	}
@@ -50,8 +54,15 @@ func ListTodo(ctx context.Context, ev inflexible.Event) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return design.ListTodo(ctx, registry.Store, &input.All)
+	return f(ctx, registry.Store, &input.All)
 }
+
+// bind
+
+var (
+	AddTodo  = addTodoFunc(design.AddTodo)
+	ListTodo = listTodoFunc(design.ListTodo)
+)
 
 // use a single instance of Validate, it caches struct info
 var validate *validator.Validate
