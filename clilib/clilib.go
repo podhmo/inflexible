@@ -15,7 +15,7 @@ import (
 
 type DoFunc func(path []*Command, args []string) error
 
-func LiftHandler(h inflexible.HandlerFunc, callbacks ...func() error) DoFunc {
+func LiftHandler(h inflexible.Handler, callbacks ...func() error) DoFunc {
 	var POSTDATA json.RawMessage // support same-expression as web API
 
 	return func(path []*Command, args []string) error {
@@ -62,7 +62,7 @@ func LiftHandler(h inflexible.HandlerFunc, callbacks ...func() error) DoFunc {
 		}
 
 		ctx := context.Background()
-		result, err := h(ctx, ev)
+		result, err := h.Handle(ctx, ev)
 		if err != nil {
 			if x, ok := err.(inflexible.HasCode); ok && x.Code() == 400 {
 				cmd.Usage()
