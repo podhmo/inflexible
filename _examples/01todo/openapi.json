@@ -59,7 +59,8 @@
           "default": {
             "description": ""
           }
-        }
+        },
+        "summary": "Adds a new todo to your todo list"
       }
     },
     "/ListTodo": {
@@ -92,11 +93,16 @@
           "default": {
             "description": ""
           }
-        }
+        },
+        "summary": "Returns the current todo list"
       }
     }
   },
   "servers": [
+    {
+      "url": "http://localhost:44444",
+      "description": "local development server"
+    },
     {
       "url": "http://localhost:8888",
       "description": "local development server"

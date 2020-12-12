@@ -2,10 +2,14 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"reflect"
+	"strconv"
+	"strings"
 
 	"m/todogenerated"
 
@@ -46,6 +50,9 @@ func SetupHTTPHandler(addr string) http.Handler {
 			reflectopenapi.MergeParamsInputSelector
 			reflectopenapi.FirstParamOutputSelector
 		}{},
+		IsRequiredCheckFunction: func(tag reflect.StructTag) bool {
+			return strings.Contains(tag.Get("validate"), "required")
+		},
 	}
 	doc, err := c.BuildDoc(context.Background(), func(m *reflectopenapi.Manager) {
 		{
@@ -76,6 +83,12 @@ func SetupHTTPHandler(addr string) http.Handler {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/openapi", 302)
 	})
+	if ok, _ := strconv.ParseBool(os.Getenv("GENDOC")); ok {
+		enc := json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+		enc.Encode(doc)
+		os.Exit(0)
+	}
 
 	return mux
 }
