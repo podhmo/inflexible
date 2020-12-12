@@ -1,14 +1,18 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 
 	"m/todogenerated"
 
+	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/podhmo/inflexible/weblib"
-	"github.com/podhmo/tenuki"
+	reflectopenapi "github.com/podhmo/reflect-openapi"
+	"github.com/podhmo/reflect-openapi/handler"
 )
 
 func main() {
@@ -18,7 +22,7 @@ func main() {
 	}
 
 	run := func() error {
-		mux := SetupHTTPHandler()
+		mux := SetupHTTPHandler(addr)
 		return Run(mux, addr)
 	}
 	if err := run(); err != nil {
@@ -34,16 +38,44 @@ func Run(mux http.Handler, addr string) error {
 
 // TODO: generate automatically
 
-func SetupHTTPHandler() http.Handler {
-	mux := http.DefaultServeMux // todo: fix
-	// TODO: generate the endpoint returns openapi doc
+func SetupHTTPHandler(addr string) http.Handler {
+	mux := &http.ServeMux{}
+
+	c := &reflectopenapi.Config{
+		Selector: &struct {
+			reflectopenapi.MergeParamsInputSelector
+			reflectopenapi.FirstParamOutputSelector
+		}{},
+	}
+	doc, err := c.BuildDoc(context.Background(), func(m *reflectopenapi.Manager) {
+		{
+			path := "/ListTodo"
+			action := todogenerated.ListTodo
+			mux.HandleFunc(path, weblib.LiftHandler(action))
+			op := m.Visitor.VisitFunc(action)
+			m.Doc.AddOperation(path, "POST", op)
+		}
+		{
+			path := "/AddTodo"
+			action := todogenerated.AddTodo
+			mux.HandleFunc(path, weblib.LiftHandler(action))
+			op := m.Visitor.VisitFunc(action)
+			m.Doc.AddOperation(path, "POST", op)
+		}
+	})
+	if err != nil {
+		panic(err) // xxx
+	}
+
+	// swagger-ui
+	doc.Servers = append([]*openapi3.Server{{
+		URL:         fmt.Sprintf("http://localhost%s", addr),
+		Description: "local development server",
+	}}, doc.Servers...)
+	mux.Handle("/openapi/", handler.NewHandler(doc, "/openapi/"))
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		tenuki.Render(w, r).JSON(200, map[string]interface{}{
-			"methods": []string{"ListTodo", "AddTodo"},
-		})
+		http.Redirect(w, r, "/openapi", 302)
 	})
 
-	mux.HandleFunc("/ListTodo", weblib.LiftHandler(todogenerated.ListTodo))
-	mux.HandleFunc("/AddTodo", weblib.LiftHandler(todogenerated.AddTodo))
 	return mux
 }
